@@ -1,0 +1,11 @@
+{
+  "name": "kv_copy",
+  "type": "module",
+  "scripts": {
+    "clean": "rm -f dist/kvc",
+    "build": "nim c -d:release --out:dist/kvc src/main.nim",
+    "cp": "cp dist/kvc $PREFIX/bin/kvc && chmod 700 $PREFIX/bin/kvc",
+    "trim": "strip -o dist/kvc_trimmed dist/kvc && upx --best --lzma dist/kvc_trimmed",
+    "all": "npm run build && npm run cp"
+  }
+}
