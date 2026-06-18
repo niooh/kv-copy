@@ -1,6 +1,7 @@
 import std/[os, osproc, strformat, strutils]
 
 import ../data/raw
+import terminal
 import build_info
 import index
 import query
@@ -48,23 +49,80 @@ proc printResults(results: seq[KVEntry]) =
     echo "  " & formatEntry(r)
 
 proc selectResult(results: seq[KVEntry]): KVEntry =
+  ## 交互选择：方向键辅助 + 手动输入数字 + 回车确认。
+  ## - 方向键 ↑/↓ 基于当前输入的数字进行增减（循环）
+  ## - 直接按数字键可键入任意位数的数字（可退格修改）
+  ## - 回车时：数字有效(1..N) → 确认选择；无效 → 提示错误并退出
   for i, r in results:
     stderr.writeLine &"  {i + 1} {formatEntry(r)}"
 
-  stderr.write &"\nSelect (1-{results.len}): "
-  let input = stdin.readLine().strip()
+  let n = results.len
+  let promptBase = &"Select (1-{n}): "
+  stderr.write "\n" & promptBase
+  stderr.flushFile()
 
-  let choice =
-    try:
-      parseInt(input)
-    except ValueError:
-      0
+  # 非交互回退（管道/重定向）
+  if not isTty():
+    let input = stdin.readLine().strip()
+    let choice = try: parseInt(input) except ValueError: 0
+    if choice < 1 or choice > n:
+      stderr.writeLine "Invalid selection."
+      quit(1)
+    return results[choice - 1]
 
-  if choice < 1 or choice > results.len:
-    stderr.writeLine "Invalid selection."
-    quit(1)
+  # 交互主循环（raw 模式）
+  var inputBuf = ""  # 用户输入的数字字符串（空表示未开始）
 
-  results[choice - 1]
+  enableRawMode()
+  defer: disableRawMode()
+
+  while true:
+    let (key, ch) = readKeyAndChar()
+
+    case key
+    of kpDown:
+      # 方向下：基于当前输入的数字递增（无输入时从 1 开始）
+      var cur = try: parseInt(inputBuf) except ValueError: 0
+      if cur < 1 or cur > n:
+        cur = 1
+      else:
+        cur = if cur >= n: 1 else: cur + 1
+      inputBuf = $cur
+      stderr.write "\r" & promptBase & inputBuf & "\x1b[K"
+      stderr.flushFile()
+    of kpUp:
+      # 方向上：基于当前输入的数字递减（无输入时从 N 开始）
+      var cur = try: parseInt(inputBuf) except ValueError: 0
+      if cur < 1 or cur > n:
+        cur = n
+      else:
+        cur = if cur <= 1: n else: cur - 1
+      inputBuf = $cur
+      stderr.write "\r" & promptBase & inputBuf & "\x1b[K"
+      stderr.flushFile()
+    of kpEnter:
+      let choice = try: parseInt(inputBuf) except ValueError: 0
+      if choice >= 1 and choice <= n:
+        stderr.write "\n"
+        return results[choice - 1]
+      else:
+        # 无效选择：恢复终端，输出错误并退出（与原始行为一致）
+        stderr.write "\n"
+        disableRawMode()   # 确保终端恢复，避免 stderr 显示异常
+        stderr.writeLine "Invalid selection."
+        quit(1)
+    of kpOther:
+      # 处理数字键和退格键
+      if ch >= '0' and ch <= '9':
+        inputBuf.add(ch)
+        stderr.write "\r" & promptBase & inputBuf & "\x1b[K"
+        stderr.flushFile()
+      elif ch == '\x7f' or ch == '\b':    # 退格 (DEL / Backspace)
+        if inputBuf.len > 0:
+          inputBuf.setLen(inputBuf.len - 1)
+          stderr.write "\r" & promptBase & inputBuf & "\x1b[K"
+          stderr.flushFile()
+      # 其他字符一律忽略
 
 proc handleCopyResults(results: seq[KVEntry]) =
   if results.len == 0:

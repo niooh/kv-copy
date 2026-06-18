@@ -1,6 +1,6 @@
 import std/[algorithm, strutils, tables]
 
-#! 编译时索引构建
+## 编译时索引构建
 const SEP* = " | "
 
 type
