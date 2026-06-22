@@ -1,4 +1,4 @@
-import std/[strutils, tables]
+import std/[strutils, tables, strformat]
 import index
 
 ## 运行时查询逻辑
@@ -95,3 +95,28 @@ func query*(idx: KVIndex; terms: seq[string]; strict: bool; andMode: bool): seq[
   for id in final:
     if id >= 0 and id < idx.v.len:
       result.add(idx.v[id])
+
+# 查询模式定义与统一入口
+
+type QueryMode* = object
+  strict*: bool
+  andMode*: bool
+
+const QueryModes* = [
+  ("-s",  QueryMode(strict: true,  andMode: false), "Strict match (OR)"),
+  ("-sa", QueryMode(strict: true,  andMode: true),  "Strict match (AND)"),
+  ("-c",  QueryMode(strict: false, andMode: false), "Contains match (OR)"),
+  ("-ca", QueryMode(strict: false, andMode: true),  "Contains match (AND)")
+]
+
+proc parseMode*(mode: string): QueryMode =
+  for item in QueryModes:
+    if item[0] == mode:
+      return item[1]
+  stderr.writeLine &"Unknown mode: {mode}"
+  quit(1)
+
+proc runQuery*(idx: KVIndex; mode: string; terms: seq[string]): seq[KVEntry] =
+  let m = parseMode(mode)
+  query(idx, terms, strict = m.strict, andMode = m.andMode)
+  
