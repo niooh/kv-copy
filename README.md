@@ -69,13 +69,13 @@ kvc <command> [terms]
 
 ```bash
 $ kvc ls
-  apple | fruit | red  A sweet red fruit
-  apple | 苹果  中文测试
+  apple | fruit | red | 苹果  A sweet red fruit
+  banana | fruit | yellow  A long yellow fruit
   ...
 
-$ kvc -c apple
-  1 apple | fruit | red  A sweet red fruit
-  2 apple | 苹果  中文测试
+$ kvc -c red
+  1 apple | fruit | red | 苹果  A sweet red fruit
+  2 tomato | fruit | red | vegetable  Botanically a fruit, culinarily a vegetable
 
 Select (1-2): 1
 Copied.
