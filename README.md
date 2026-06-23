@@ -1,6 +1,9 @@
-<h1 align="center">kvc</h1>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/niooh/kv-query/main/docs/figures/logo.png" alt="kv logo" width="160px"/>
+</p>
+<h1 align="center">kv-copy</h1>
 
-**kvc** lets you define key‑value entries in a Nim file, query them, and **copy the value directly to your clipboard** using OSC 52.  
+a lightweight tool lets you define key‑value entries in a single file, query them, and **copy the value directly to your clipboard** using OSC 52.  
 
 ## Features
 
@@ -73,11 +76,15 @@ $ kvc ls
   banana | fruit | yellow  A long yellow fruit
   ...
 
-$ kvc -c red
+$ kvc -s red
   1 apple | fruit | red | 苹果  A sweet red fruit
   2 tomato | fruit | red | vegetable  Botanically a fruit, culinarily a vegetable
 
 Select (1-2): 1
+Copied.
+
+$ kvc -ca app it
+  apple | fruit | red | 苹果  A sweet red fruit
 Copied.
 ```
 
