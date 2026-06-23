@@ -1,5 +1,4 @@
 ## POSIX raw-mode terminal helpers for interactive single-keypress input.
-## Uses termios directly via importc — no external dependencies needed.
 import std/posix
 
 # termios FFI

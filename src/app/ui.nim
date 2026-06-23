@@ -1,7 +1,6 @@
 ## User interface: output formatting, result listing, interactive selection, help.
 import std/[strformat, strutils]
 import ../utils/terminal
-from ../utils/clipboard import osc52Copy
 import ../core/index
 from ../core/query import QueryModes
 
@@ -10,12 +9,10 @@ const
   colorReset = "\e[0m"
 
 # 输出格式化
-
 proc formatEntry*(r: KVEntry): string =
   &"{colorBlue}{r.compositeKey}{colorReset}  {r.value}"
 
 # 结果打印
-
 proc printResults*(results: seq[KVEntry]) =
   if results.len == 0:
     echo "  No matches."
@@ -24,7 +21,6 @@ proc printResults*(results: seq[KVEntry]) =
     echo "  " & formatEntry(r)
 
 # 交互选择，允许 方向键/手动输入
-
 proc selectResult*(results: seq[KVEntry]): KVEntry =
   ## 交互选择，支持方向键与数字输入，回车确认。
   for i, r in results:
@@ -93,22 +89,6 @@ proc selectResult*(results: seq[KVEntry]): KVEntry =
           stderr.write "\r" & promptBase & inputBuf & "\x1b[K"
           stderr.flushFile()
       # 其他字符忽略
-
-# 复制流程（打印 + 选择 + 复制）
-proc handleCopyResults*(results: seq[KVEntry]) =
-  if results.len == 0:
-    echo "  No matches."
-    return
-
-  let selected =
-    if results.len == 1:
-      echo "  " & formatEntry(results[0])
-      results[0]
-    else:
-      selectResult(results)
-
-  osc52Copy(selected.value)
-  stderr.writeLine "Copied."
 
 # 帮助信息
 proc printHelp*() =

@@ -2,6 +2,7 @@ import std/[os, strformat]
 import ../data/raw
 import app/[ui, editor]
 import core/[index, query]
+import utils/copy
 
 const idx = buildIndex(KV_DATA)
 
@@ -24,7 +25,20 @@ proc main() =
       stderr.writeLine &"Usage: kvc {args[0]} <terms>"
       quit(1)
     let results = runQuery(idx, args[0], args[1..^1])
-    handleCopyResults(results)
+
+    if results.len == 0:
+      echo "  No matches."
+      return
+
+    let selected =
+      if results.len == 1:
+        echo "  " & formatEntry(results[0])
+        results[0]
+      else:
+        selectResult(results)
+
+    copyResolved(selected.value)  # 解析并复制
+    stderr.writeLine "Copied."
 
   else:
     stderr.writeLine &"Unknown command: {args[0]}"

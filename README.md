@@ -1,30 +1,34 @@
 <h1 align="center">kvc</h1>
 
-`kvc` lets you define key‑value entries in a Nim file, query them, and **copy the value directly to your clipboard** using OSC 52.  
+**kvc** lets you define key‑value entries in a Nim file, query them, and **copy the value directly to your clipboard** using OSC 52.  
 
 ## Features
 
-- **Compiled index**: data lives in `data/raw.nim` and is embedded at compile time for instant lookup.
 - **Flexible search**: strict or partial matching, with OR / AND logic.
+- **Multiple value sources**: static text, command output, or file contents.
 - **Interactive selection**: when multiple results match, you can navigate with <kbd>↑ ↓</kbd> or type a number to select.
 - **Self‑updating editor**: `kvc edit` opens your editor, and if you change the data, the tool rebuilds itself automatically.
 
 ## Data format
 
-Entries are stored in `data/raw.nim` as a flat array where keys and values alternate.
-Keys are separated by ` | ` (space‑pipe‑space) to allow multiple tags per entry:
+Entries are stored in `data/raw.nim` as a flat array where keys and values alternate:
 
 ```nim
 const KV_DATA* = [
-  "apple | fruit | red", "A sweet red fruit",
-  "banana | fruit | yellow", "A long yellow fruit",
-  "carrot | vegetable | orange", "A crunchy orange root",
-  "tomato | fruit | red | vegetable", "Botanically a fruit, culinarily a vegetable",
-  "grape | fruit | purple", "Small round fruit for wine",
-  "apple | 苹果", "中文测试"
+  "key1 | key2 | ...", "value",
+  ...
 ]
 ```
 
+- Keys are separated by ` | ` (space‑pipe‑space) to allow multiple tags per entry.
+
+- **Value prefixes**:
+
+| Prefix | Copy target                           | Example              |
+|--------|---------------------------------------|----------------------|
+| `s: `  | String literal (default if no prefix) | `"s: Hello"`         |
+| `c: `  | Command output                        | `"c: date '+%H:%M'"` |
+| `f: `  | File contents by absolute path        | `"f: /etc/hosts"`    |
 
 ## Build
 
@@ -81,7 +85,7 @@ Now paste and you’ll see `A sweet red fruit`.
 
 ## Selection
 
-If a query returns a single entry, its value is copied immediately — no prompt.
+If a query returns a single entry, its value is copied immediately.
 
 When multiple entries match, an interactive prompt appears:
 

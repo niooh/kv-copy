@@ -96,7 +96,7 @@ func query*(idx: KVIndex; terms: seq[string]; strict: bool; andMode: bool): seq[
     if id >= 0 and id < idx.v.len:
       result.add(idx.v[id])
 
-# 查询模式定义与统一入口
+# 查询模式定义
 
 type QueryMode* = object
   strict*: bool
