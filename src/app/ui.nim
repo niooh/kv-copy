@@ -5,14 +5,20 @@ import ../core/index
 from ../core/query import QueryModes
 
 const
-  colorBlue = "\e[34m"
-  colorReset = "\e[0m"
+  colorBlue     = "\e[34m"  # Key color, blue
+  colorPrefix   = "\e[36m"  # Prefix color, cyan
+  colorReset    = "\e[0m"
 
 # 输出格式化
-proc formatEntry*(r: KVEntry): string =
-  &"{colorBlue}{r.compositeKey}{colorReset}  {r.value}"
+proc colorizeValue(value: string): string =
+  for prefix in ["s: ", "f: ", "c: "]:
+    if value.startsWith(prefix):
+      return colorPrefix & prefix & colorReset & value[prefix.len..^1]
+  return value
 
-# 结果打印
+proc formatEntry*(r: KVEntry): string =
+  &"{colorBlue}{r.compositeKey}{colorReset}  {colorizeValue(r.value)}"
+
 proc printResults*(results: seq[KVEntry]) =
   if results.len == 0:
     echo "  No matches."
@@ -98,7 +104,7 @@ proc printHelp*() =
   echo &"  {colorBlue}ls{colorReset}           List all"
   echo &"  {colorBlue}edit{colorReset}         Edit raw.nim and rebuild if changed"
   for item in QueryModes:
-    echo &"  {colorBlue}{item[0]}{colorReset} ...      {item[2]} + copy"
+    echo &"  {colorBlue}{item[0]}{colorReset} ...      {item[2]}"
   echo &"  {colorBlue}-h{colorReset}           Show help"
   echo ""
   echo "Examples:"

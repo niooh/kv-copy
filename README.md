@@ -3,14 +3,14 @@
 </p>
 <h1 align="center">kv-copy</h1>
 
-a lightweight tool lets you define key‑value entries in a single file, query them, and **copy the value directly to your clipboard** using OSC 52.  
+a lightweight tool lets you define key‑value entries in a single file, query them, and **copy the value directly to your clipboard**.  
 
 ## Features
 
 - **Flexible search**: strict or partial matching, with OR / AND logic.
 - **Multiple value sources**: static text, command output, or file contents.
 - **Interactive selection**: when multiple results match, you can navigate with <kbd>↑ ↓</kbd> or type a number to select.
-- **Self‑updating editor**: `kvc edit` opens your editor, and if you change the data, the tool rebuilds itself automatically.
+- **Self‑updating**: `kvc edit` opens your editor, and if you change the data, the tool rebuilds itself automatically.
 
 ## Data format
 
@@ -23,9 +23,9 @@ const KV_DATA* = [
 ]
 ```
 
-- Keys are separated by ` | ` (space‑pipe‑space) to allow multiple tags per entry.
+Keys are separated by ` | ` (space‑pipe‑space) to allow multiple tags per entry.
 
-- **Value prefixes**:
+**Value prefixes**:
 
 | Prefix | Copy target                           | Example              |
 |--------|---------------------------------------|----------------------|
@@ -35,7 +35,12 @@ const KV_DATA* = [
 
 ## Build
 
-You need [Nim](https://nim-lang.org) ≥ 2.0.0 installed.
+You need:
+- Unix-like system, e.g., Linux, WSL2, macOS, Termux.
+- A terminal that supports OSC52 for clipboard copy.
+- [Nim](https://nim-lang.org) ≥ 2.0.0 installed.
+
+Run:
 
 ```bash
 git clone https://github.com/niooh/kvc && cd kvc/
@@ -90,7 +95,7 @@ Copied.
 
 Now paste and you’ll see `A sweet red fruit`.
 
-## Selection
+### Selection
 
 If a query returns a single entry, its value is copied immediately.
 
@@ -100,12 +105,6 @@ When multiple entries match, an interactive prompt appears:
 - <kbd>↓</kbd> moves to the next item, <kbd>↑</kbd> to the previous. Both wrap around at the edges.
 - You can also type a number directly.
 - Press <kbd>Enter</kbd> to confirm the current selection.
-
-## Configuration
-
-- `data/raw.nim`: your actual key‑value data.
-- `config.nims`: compiler settings (optimisations, paths).
-- The `$EDITOR` or `$VISUAL` environment variable is respected for the `edit` command.
 
 ## License
 

@@ -103,9 +103,9 @@ type QueryMode* = object
   andMode*: bool
 
 const QueryModes* = [
-  ("-s",  QueryMode(strict: true,  andMode: false), "Strict match (OR)"),
+  ("-s",  QueryMode(strict: true,  andMode: false), " Strict match (OR)"),
   ("-sa", QueryMode(strict: true,  andMode: true),  "Strict match (AND)"),
-  ("-c",  QueryMode(strict: false, andMode: false), "Contains match (OR)"),
+  ("-c",  QueryMode(strict: false, andMode: false), " Contains match (OR)"),
   ("-ca", QueryMode(strict: false, andMode: true),  "Contains match (AND)")
 ]
 
