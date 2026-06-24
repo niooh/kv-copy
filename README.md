@@ -66,8 +66,9 @@ kvc <command> [terms]
 | Command       | Description |
 |---------------|-------------|
 | `-h`          | Show help   |
-| `ls`          | List all entries |
 | `edit`        | Open `data/raw.nim` in your editor; if changed, rebuild and replace the binary |
+| `path`        | Show project root path |
+| `ls`          | List all entries |
 | `-s [terms]`  | Strict match, OR logic |
 | `-sa [terms]` | Strict match, AND logic |
 | `-c [terms]`  | Contains match, OR logic |

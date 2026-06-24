@@ -3,6 +3,7 @@ import ../data/raw
 import app/[ui, editor]
 import core/[index, query]
 import utils/copy
+import build_info
 
 const idx = buildIndex(KV_DATA)
 
@@ -14,11 +15,14 @@ proc main() =
     return
 
   case args[0]
-  of "ls":
-    printResults(idx.v)
-
   of "edit":
     runEdit()
+
+  of "path":
+    echo ProjectRoot
+
+  of "ls":
+    printResults(idx.v)
 
   of "-s", "-sa", "-c", "-ca":
     if args.len < 2:
@@ -39,7 +43,7 @@ proc main() =
 
     copyResolved(selected.value)  # 解析并复制
     stderr.writeLine "Copied."
-
+  
   else:
     stderr.writeLine &"Unknown command: {args[0]}"
     printHelp()

@@ -101,8 +101,9 @@ proc printHelp*() =
   echo &"Usage: kvc {colorBlue}<command>{colorReset} [terms]"
   echo ""
   echo "Commands:"
-  echo &"  {colorBlue}ls{colorReset}           List all"
   echo &"  {colorBlue}edit{colorReset}         Edit raw.nim and rebuild if changed"
+  echo &"  {colorBlue}path{colorReset}         Show project root path"
+  echo &"  {colorBlue}ls{colorReset}           List all"
   for item in QueryModes:
     echo &"  {colorBlue}{item[0]}{colorReset} ...      {item[2]}"
   echo &"  {colorBlue}-h{colorReset}           Show help"
