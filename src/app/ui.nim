@@ -5,19 +5,40 @@ import ../core/index
 from ../core/query import QueryModes
 
 const
-  colorBlue     = "\e[34m"  # Key color, blue
-  colorPrefix   = "\e[36m"  # Prefix color, cyan
-  colorReset    = "\e[0m"
+  ColorBlue   = "\e[34m"  # Key color, blue
+  ColorPrefix = "\e[36m"  # Prefix color, cyan
+  ColorDim    = "\e[2m"
+  ColorReset  = "\e[0m"
+  MaxValueDisplay = 60    # value 最大显示宽度
 
 # 输出格式化
 proc colorizeValue(value: string): string =
-  for prefix in ["s: ", "f: ", "c: "]:
-    if value.startsWith(prefix):
-      return colorPrefix & prefix & colorReset & value[prefix.len..^1]
-  return value
+  # 先处理前缀
+  var prefix = ""
+  var rest = value
+  for p in ["s: ", "f: ", "c: "]:
+    if value.startsWith(p):
+      prefix = p
+      rest = value[prefix.len..^1]
+      break
+
+  # 如果没有前缀，直接将整串视为 rest
+  if prefix == "":
+    if MaxValueDisplay > 0 and rest.len > MaxValueDisplay:
+      # 截断并在末尾加暗色 ...
+      result = rest[0..<MaxValueDisplay] & ColorDim & " ..." & ColorReset
+    else:
+      result = rest
+  else:
+    let available = MaxValueDisplay - prefix.len
+    if MaxValueDisplay > 0 and rest.len > available:
+      result = ColorPrefix & prefix & ColorReset &
+               rest[0..<available] & ColorDim & " ..." & ColorReset
+    else:
+      result = ColorPrefix & prefix & ColorReset & rest
 
 proc formatEntry*(r: KVEntry): string =
-  &"{colorBlue}{r.compositeKey}{colorReset}  {colorizeValue(r.value)}"
+  &"{ColorBlue}{r.compositeKey}{ColorReset}  {colorizeValue(r.value)}"
 
 proc printResults*(results: seq[KVEntry]) =
   if results.len == 0:
@@ -96,17 +117,16 @@ proc selectResult*(results: seq[KVEntry]): KVEntry =
           stderr.flushFile()
       # 其他字符忽略
 
-# 帮助信息
 proc printHelp*() =
-  echo &"Usage: kvc {colorBlue}<command>{colorReset} [terms]"
+  echo &"Usage: kvc {ColorBlue}<command>{ColorReset} [terms]"
   echo ""
   echo "Commands:"
-  echo &"  {colorBlue}edit{colorReset}         Edit raw.nim and rebuild if changed"
-  echo &"  {colorBlue}path{colorReset}         Show project root path"
-  echo &"  {colorBlue}ls{colorReset}           List all"
+  echo &"  {ColorBlue}edit{ColorReset}         Edit raw.nim and rebuild if changed"
+  echo &"  {ColorBlue}path{ColorReset}         Show project root path"
+  echo &"  {ColorBlue}ls{ColorReset}           List all"
   for item in QueryModes:
-    echo &"  {colorBlue}{item[0]}{colorReset} ...      {item[2]}"
-  echo &"  {colorBlue}-h{colorReset}           Show help"
+    echo &"  {ColorBlue}{item[0]}{ColorReset} ...      {item[2]}"
+  echo &"  {ColorBlue}-h{ColorReset}           Show help"
   echo ""
   echo "Examples:"
   echo "  kvc -c app"
