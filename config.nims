@@ -1,7 +1,10 @@
-## 编译配置，追求性能
+## 编译配置
 
 --path:"src"
 --mm:orc
+--parallelBuild:0
+--incremental:on
+--verbosity:0  # 减少输出
 
 #[
 when defined(release):

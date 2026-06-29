@@ -122,7 +122,7 @@ proc printHelp*() =
   echo ""
   echo "Commands:"
   echo &"  {ColorBlue}edit{ColorReset}         Edit raw.nim and rebuild if changed"
-  echo &"  {ColorBlue}path{ColorReset}         Show project root path"
+  echo &"  {ColorBlue}path{ColorReset}         Print project root path and copy it"
   echo &"  {ColorBlue}ls{ColorReset}           List all"
   for item in QueryModes:
     echo &"  {ColorBlue}{item[0]}{ColorReset} ...      {item[2]}"

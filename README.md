@@ -106,7 +106,3 @@ When multiple entries match, an interactive prompt appears:
 - <kbd>↓</kbd> moves to the next item, <kbd>↑</kbd> to the previous. Both wrap around at the edges.
 - You can also type a number directly.
 - Press <kbd>Enter</kbd> to confirm the current selection.
-
-## License
-
-MIT

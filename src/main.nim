@@ -20,6 +20,7 @@ proc main() =
 
   of "path":
     echo ProjectRoot
+    copyResolved(ProjectRoot)
 
   of "ls":
     printResults(idx.v)
