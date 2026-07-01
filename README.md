@@ -43,7 +43,9 @@ You need:
 Run:
 
 ```bash
-git clone https://github.com/niooh/kvc && cd kvc/
+git clone https://github.com/niooh/kv-copy && cd kv-copy/
+
+# you can modify the parameters in `config.nims` before compiling
 nim c -d:release --out:dist/kvc src/main.nim
 ```
 
