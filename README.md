@@ -37,7 +37,8 @@ Keys are separated by ` | ` (space‑pipe‑space) to allow multiple tags per en
 
 You need:
 - Unix-like system, e.g., Linux, WSL2, macOS, Termux.
-- A terminal that supports OSC52 for clipboard copy.
+- A terminal that supports OSC52 for clipboard copy.<br>Use `echo -e "\e]52;c;$(echo -n '😀' | base64)\a"` and immediately paste anywhere. If `😀` appears, OSC52 works.
+
 - [Nim](https://nim-lang.org) ≥ 2.0.0 installed.
 
 Run:

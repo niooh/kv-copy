@@ -1,6 +1,6 @@
 import std/[algorithm, strutils, tables]
 
-## 编译时索引构建
+## Compile-time index building
 const SEP* = " | "
 
 type
@@ -9,9 +9,9 @@ type
     value*: string
 
   KVIndex* = object
-    map*: Table[string, seq[int]]   # 哈希表
-    k*: seq[string]                 # 所有关键词（供 contains 遍历）
-    v*: seq[KVEntry]                # 原始条目
+    map*: Table[string, seq[int]]  # 哈希表
+    k*: seq[string]                # 所有关键词，供 contains 遍历
+    v*: seq[KVEntry]               # 原始条目
 
 func buildIndex*(data: openArray[string]): KVIndex =
   assert data.len mod 2 == 0

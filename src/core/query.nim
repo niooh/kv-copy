@@ -1,7 +1,7 @@
 import std/[strutils, tables, strformat]
 import index
 
-## 运行时查询逻辑
+## Runtime query logic
 
 # 两个有序 seq 的并集，去重，保持升序
 func mergeUnion(a, b: seq[int]): seq[int] =

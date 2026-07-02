@@ -1,5 +1,5 @@
 ## User interface: output formatting, result listing, interactive selection, help.
-import std/[strformat, strutils]
+import std/[strformat, strutils, unicode]
 import ../utils/terminal
 import ../core/index
 from ../core/query import QueryModes
@@ -13,7 +13,6 @@ const
 
 # 输出格式化
 proc colorizeValue(value: string): string =
-  # 先处理前缀
   var prefix = ""
   var rest = value
   for p in ["s: ", "f: ", "c: "]:
@@ -24,16 +23,16 @@ proc colorizeValue(value: string): string =
 
   # 如果没有前缀，直接将整串视为 rest
   if prefix == "":
-    if MaxValueDisplay > 0 and rest.len > MaxValueDisplay:
+    if rest.runeLen > MaxValueDisplay:  # runeLen 可处理 rest 中可能存在的特殊 Unicode
       # 截断并在末尾加暗色 ...
-      result = rest[0..<MaxValueDisplay] & ColorDim & " ..." & ColorReset
+      result = rest.runeSubStr(0, MaxValueDisplay) & ColorDim & " ..." & ColorReset
     else:
       result = rest
   else:
     let available = MaxValueDisplay - prefix.len
-    if MaxValueDisplay > 0 and rest.len > available:
+    if rest.runeLen > available:
       result = ColorPrefix & prefix & ColorReset &
-               rest[0..<available] & ColorDim & " ..." & ColorReset
+               rest.runeSubStr(0, available) & ColorDim & " ..." & ColorReset
     else:
       result = ColorPrefix & prefix & ColorReset & rest
 
