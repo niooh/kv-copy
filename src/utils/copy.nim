@@ -2,12 +2,12 @@
 import std/[base64, strformat, os, osproc, strutils]
 
 proc osc52Copy(text: string) =
-  # Copy text to the terminal clipboard via OSC52 escape sequence.
   let encoded = base64.encode(text)
   stdout.write &"\x1b]52;c;{encoded}\x07"
 
-proc copyResolved*(raw: string) =
-  # Parse the prefix and copy the final content.
+proc copyResolved*(raw: string): bool =
+  ## Parse the prefix and copy the final content.
+  ## Returns true if content was non‑empty and copied, false otherwise.
   var text: string
   if raw.startsWith("f: "):
     let path = raw[3..^1]
@@ -21,4 +21,9 @@ proc copyResolved*(raw: string) =
     text = raw[3..^1]
   else:
     text = raw
+
+  if text.len == 0:
+    return false
+
   osc52Copy(text)
+  return true

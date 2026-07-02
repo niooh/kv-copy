@@ -23,7 +23,7 @@ const KV_DATA* = [
 ]
 ```
 
-Keys are separated by ` | ` (space‑pipe‑space) to allow multiple tags per entry.
+Keys are separated by ` | ` (space‑pipe‑space) to allow multiple tags per entry.<br>
 
 **Value prefixes**:
 
@@ -32,6 +32,9 @@ Keys are separated by ` | ` (space‑pipe‑space) to allow multiple tags per en
 | `s: `  | String literal (default if no prefix) | `"s: Hello"`         |
 | `c: `  | Command output                        | `"c: date '+%H:%M'"` |
 | `f: `  | File contents by absolute path        | `"f: /etc/hosts"`    |
+
+> 💡 When the resolved value is empty (e.g. empty string, empty file, or command with no output), no clipboard copy is performed.<br>
+> So use `c: your_command > /dev/null 2>&1` to run a command without polluting the clipboard.
 
 ## Build
 

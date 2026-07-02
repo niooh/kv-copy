@@ -42,8 +42,8 @@ proc main() =
       else:
         selectResult(results)
 
-    copyResolved(selected.value)  # 解析并复制
-    stderr.writeLine "Copied."
+    if copyResolved(selected.value):  # 解析，对非空内容复制
+      stderr.writeLine "Copied."
   
   else:
     stderr.writeLine &"Unknown command: {args[0]}"
