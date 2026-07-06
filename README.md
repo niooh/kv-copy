@@ -40,8 +40,9 @@ Keys are separated by ` | ` (space‑pipe‑space) to allow multiple tags per en
 
 You need:
 - Unix-like system, e.g., Linux, WSL2, macOS, Termux.
-- A terminal that supports OSC52 for clipboard copy.<br>Use `echo -e "\e]52;c;$(echo -n '😀' | base64)\a"` and immediately paste anywhere. If `😀` appears, OSC52 works.
-
+- One of these clipboard tools: `wl-copy | xclip | xsel | pbcopy | termux-clipboard-set`.<br>
+  If none of them is found, the program falls back to **OSC52**, which may not work reliably for long text.
+  To test OSC52 support, run `echo -e "\e]52;c;$(echo -n '😀' | base64)\a"` and paste somewhere. If `😀` appears, it works.
 - [Nim](https://nim-lang.org) ≥ 2.0.0 installed.
 
 Run:
