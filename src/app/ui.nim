@@ -5,8 +5,9 @@ import ../core/index
 from ../core/query import QueryModes
 
 const
-  ColorBlue   = "\e[34m"  # Key color, blue
-  ColorPrefix = "\e[36m"  # Prefix color, cyan
+  ColorYellow = "\e[33m"  # Number color
+  ColorBlue   = "\e[34m"  # Key color
+  ColorCyan = "\e[36m"  # Prefix color
   ColorDim    = "\e[2m"
   ColorReset  = "\e[0m"
   MaxValueDisplay = 60    # value 最大显示宽度
@@ -31,10 +32,10 @@ proc colorizeValue(value: string): string =
   else:
     let available = MaxValueDisplay - prefix.len
     if rest.runeLen > available:
-      result = ColorPrefix & prefix & ColorReset &
+      result = ColorCyan & prefix & ColorReset &
                rest.runeSubStr(0, available) & ColorDim & " ..." & ColorReset
     else:
-      result = ColorPrefix & prefix & ColorReset & rest
+      result = ColorCyan & prefix & ColorReset & rest
 
 proc formatEntry*(r: KVEntry): string =
   &"{ColorBlue}{r.compositeKey}{ColorReset}  {colorizeValue(r.value)}"
@@ -50,10 +51,10 @@ proc printResults*(results: seq[KVEntry]) =
 proc selectResult*(results: seq[KVEntry]): KVEntry =
   ## 交互选择，支持方向键与数字输入，回车确认。
   for i, r in results:
-    stderr.writeLine &"  {i + 1} {formatEntry(r)}"
+    stderr.writeLine &"  {ColorYellow}{i + 1}{ColorReset} {formatEntry(r)}"
 
   let n = results.len
-  let promptBase = &"Select (1-{n}): "
+  let promptBase = &"Select ({ColorYellow}1-{n}{ColorReset}): "
   stderr.write "\n" & promptBase
   stderr.flushFile()
 
