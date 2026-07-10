@@ -20,8 +20,9 @@ proc main() =
 
   of "path":
     echo ProjectRoot
-    discard copyResolved(ProjectRoot)
-
+    if args.len > 1 and args[1] == "-c":
+      discard copyResolved(ProjectRoot)
+    
   of "ls":
     printResults(idx.v)
 

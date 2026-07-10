@@ -68,6 +68,10 @@ proc copyResolved*(raw: string): bool =
     let cmd = raw[3..^1]
     text = execProcess(cmd, options = {poUsePath, poEvalCommand, poStdErrToStdOut})
     text.removeSuffix("\n")  # remove trailing newlines
+  elif raw.startsWith("r: "):
+    let cmd = raw[3..^1]
+    discard execShellCmd(cmd)
+    return false
   elif raw.startsWith("s: "):
     text = raw[3..^1]
   else:

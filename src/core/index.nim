@@ -9,9 +9,9 @@ type
     value*: string
 
   KVIndex* = object
-    map*: Table[string, seq[int]]  # 哈希表
-    k*: seq[string]                # 所有关键词，供 contains 遍历
-    v*: seq[KVEntry]               # 原始条目
+    map*: Table[string, seq[int]]  # Hash table
+    k*: seq[string]                # All keywords, for contains iteration
+    v*: seq[KVEntry]               # Raw entries
 
 func buildIndex*(data: openArray[string]): KVIndex =
   assert data.len mod 2 == 0
@@ -21,11 +21,11 @@ func buildIndex*(data: openArray[string]): KVIndex =
     keywordMap = initTable[string, seq[int]]()
     keywords: seq[string]
 
-  # 解析条目
+  # parse entries
   for i in countup(0, data.len - 1, 2):
     entries.add(KVEntry(compositeKey: data[i], value: data[i + 1]))
 
-  # 构建哈希映射
+  # build hash map
   for id, entry in entries:
     for key in entry.compositeKey.split(SEP):
       if key notin keywordMap:
@@ -34,7 +34,7 @@ func buildIndex*(data: openArray[string]): KVIndex =
       else:
         keywordMap[key].add(id)
 
-  # 对每个 ID 列表排序
+  # sort each ID list
   for key in keywords:
     keywordMap[key].sort(cmp[int])
 

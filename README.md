@@ -27,14 +27,14 @@ Keys are separated by ` | ` (space‑pipe‑space) to allow multiple tags per en
 
 **Value prefixes**:
 
-| Prefix | Copy target                           | Example              |
-|--------|---------------------------------------|----------------------|
-| `s: `  | String literal (default if no prefix) | `"s: Hello"`         |
-| `c: `  | Command output                        | `"c: date '+%H:%M'"` |
-| `f: `  | File contents by absolute path        | `"f: /etc/hosts"`    |
+| Prefix | Copy behavior                       | Example              |
+|--------|-------------------------------------|----------------------|
+| `s: `  | Copy string (default if no prefix)  | `"s: Hello"`         |
+| `f: `  | Copy file content by absolute path  | `"f: /etc/hosts"`    |
+| `c: `  | Copy command output                 | `"c: date '+%H:%M'"` |
+| `r: `  | Run command and do not copy         | `"r: pwd"`           |
 
-> 💡 When the resolved value is empty (e.g. empty string, empty file, or command with no output), no clipboard copy is performed.<br>
-> So use `c: your_command > /dev/null 2>&1` to run a command without polluting the clipboard.
+> When the resolved value is empty (e.g. empty string, empty file, or command with no output), no clipboard copy is performed.
 
 ## Build
 
@@ -73,13 +73,13 @@ kvc <command> [terms]
 | Command       | Description |
 |---------------|-------------|
 | `-h`          | Show help   |
-| `edit`        | Open `data/raw.nim` in your editor; if changed, rebuild and replace the binary |
-| `path`        | Show project root path |
-| `ls`          | List all entries |
 | `-s [terms]`  | Strict match, OR logic |
 | `-sa [terms]` | Strict match, AND logic |
 | `-c [terms]`  | Contains match, OR logic |
 | `-ca [terms]` | Contains match, AND logic |
+| `ls`          | List all entries |
+| `edit`        | Open `data/raw.nim` in your editor; if changed, rebuild and replace the binary |
+| `path [-c]`   | Show project root path; add `-c` to copy it to clipboard |
 
 ### Examples
 
@@ -100,8 +100,6 @@ $ kvc -ca app it
   apple | fruit | red | 苹果  A sweet red fruit
 Copied.
 ```
-
-Now paste and you’ll see `A sweet red fruit`.
 
 ### Selection
 

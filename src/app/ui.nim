@@ -12,20 +12,19 @@ const
   ColorReset  = "\e[0m"
   MaxValueDisplay = 60    # value 最大显示宽度
 
-# 输出格式化
+# Output formatting
 proc colorizeValue(value: string): string =
   var prefix = ""
   var rest = value
-  for p in ["s: ", "f: ", "c: "]:
+  for p in ["s: ", "f: ", "c: ", "r: "]:
     if value.startsWith(p):
       prefix = p
       rest = value[prefix.len..^1]
       break
 
-  # 如果没有前缀，直接将整串视为 rest
   if prefix == "":
-    if rest.runeLen > MaxValueDisplay:  # runeLen 可处理 rest 中可能存在的特殊 Unicode
-      # 截断并在末尾加暗色 ...
+    if rest.runeLen > MaxValueDisplay:  # `runeLen` can handle special Unicode characters that may exist in rest.
+      # Truncate and append a dimmed "..." at the end.
       result = rest.runeSubStr(0, MaxValueDisplay) & ColorDim & " ..." & ColorReset
     else:
       result = rest
@@ -47,9 +46,8 @@ proc printResults*(results: seq[KVEntry]) =
   for r in results:
     echo "  " & formatEntry(r)
 
-# 交互选择，允许 方向键/手动输入
+# Interactive selection: allows arrow keys / manual input.
 proc selectResult*(results: seq[KVEntry]): KVEntry =
-  ## 交互选择，支持方向键与数字输入，回车确认。
   for i, r in results:
     stderr.writeLine &"  {ColorYellow}{i + 1}{ColorReset} {formatEntry(r)}"
 
@@ -58,7 +56,6 @@ proc selectResult*(results: seq[KVEntry]): KVEntry =
   stderr.write "\n" & promptBase
   stderr.flushFile()
 
-  # 非交互回退
   if not isTty():
     let input = stdin.readLine().strip()
     let choice = try: parseInt(input) except ValueError: 0
@@ -67,7 +64,7 @@ proc selectResult*(results: seq[KVEntry]): KVEntry =
       quit(1)
     return results[choice - 1]
 
-  # 交互主循环
+  # main interaction loop
   var inputBuf = ""
 
   enableRawMode()
@@ -115,14 +112,14 @@ proc selectResult*(results: seq[KVEntry]): KVEntry =
           inputBuf.setLen(inputBuf.len - 1)
           stderr.write "\r" & promptBase & inputBuf & "\x1b[K"
           stderr.flushFile()
-      # 其他字符忽略
+      # ignore other characters
 
 proc printHelp*() =
   echo &"Usage: kvc {ColorBlue}<command>{ColorReset} [terms]"
   echo ""
   echo "Commands:"
   echo &"  {ColorBlue}edit{ColorReset}         Edit raw.nim and rebuild if changed"
-  echo &"  {ColorBlue}path{ColorReset}         Print project root path and copy it"
+  echo &"  {ColorBlue}path{ColorReset} [-c]    Print project root path, use `-c` to copy"
   echo &"  {ColorBlue}ls{ColorReset}           List all"
   for item in QueryModes:
     echo &"  {ColorBlue}{item[0]}{ColorReset} ...      {item[2]}"
